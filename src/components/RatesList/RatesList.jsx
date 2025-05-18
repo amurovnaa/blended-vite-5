@@ -3,13 +3,13 @@ import GridItem from '../GridItem/GridItem';
 
 import styles from './RatesList.module.css';
 
-const RatesList = ({ rates }) => {
+const RatesList = ({ rates, baseCurrency }) => {
   return (
     <Grid>
-      {rates.map(({ key, value }) => (
+      {rates.map(({ key, value }, index) => (
         <GridItem key={key}>
           <p className={styles.text}>
-            1 {key} = {value}
+            {index + 1}. {key} = {value} {baseCurrency}
           </p>
         </GridItem>
       ))}

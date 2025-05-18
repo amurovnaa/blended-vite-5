@@ -1,5 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchCurrency, fetchExchangeResult } from './operations';
+import {
+  fetchCurrency,
+  fetchExchangeResult,
+  fetchRatesCurrency,
+} from './operations';
 
 const slice = createSlice({
   name: 'currency',
@@ -8,12 +12,13 @@ const slice = createSlice({
     exchangeInfo: null,
     isLoading: false,
     isError: null,
+    rates: [],
   },
   reducers: {
     setBaseCurrency: (state, action) => {
       state.baseCurrency = action.payload;
       state.isError = null;
-      console.log('set currency');
+      state.isLoading = false;
     },
   },
   extraReducers: builder => {
@@ -25,13 +30,10 @@ const slice = createSlice({
       .addCase(fetchCurrency.fulfilled, (state, action) => {
         state.baseCurrency = action.payload;
         state.isLoading = false;
-        console.log('fulfilled');
       })
       .addCase(fetchCurrency.rejected, (state, action) => {
         state.isLoading = false;
-        if (action.payload !== 'We already have base currency!') {
-          state.isError = action.payload;
-        }
+        state.isError = action.payload;
       })
       .addCase(fetchExchangeResult.pending, state => {
         state.isLoading = true;
@@ -39,12 +41,24 @@ const slice = createSlice({
       })
       .addCase(fetchExchangeResult.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.exchangeInfo = action.payload; // Тут записуємо { amount, from, to, rate, result }
+        state.exchangeInfo = action.payload;
       })
       .addCase(fetchExchangeResult.rejected, (state, action) => {
         state.isLoading = false;
-        state.isError = action.payload || 'Something went wrong';
+        state.isError = action.payload;
         state.exchangeInfo = null;
+      })
+      .addCase(fetchRatesCurrency.pending, state => {
+        state.isLoading = true;
+        state.isError = null;
+      })
+      .addCase(fetchRatesCurrency.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.rates = action.payload;
+      })
+      .addCase(fetchRatesCurrency.rejected, (state, action) => {
+        state.isLoading = false;
+        state.isError = action.payload;
       });
   },
 });

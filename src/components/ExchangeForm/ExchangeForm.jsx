@@ -13,7 +13,7 @@ const ExchangeForm = () => {
 
     const valueMatching = value.match(regex);
     if (!valueMatching) {
-      return console.log('❌ Invalid format. Use: "15 USD in UAH"');
+      return console.log('Invalid format. Use: "15 USD in UAH"');
     }
 
     const amount = parseFloat(valueMatching[1]);
